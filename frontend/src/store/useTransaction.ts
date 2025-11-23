@@ -69,7 +69,7 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
         products: t.products,
         paymentMethod: t.paymentMethod,
         discount: t.discount || 0,
-        kioskToken: token
+        kioskToken: token,
       }),
     });
 

@@ -20,5 +20,6 @@ export interface Transaction {
   dateTime: string;
   customer?: string | null;
   status?:string;
+  pointsToUse?:string,
 }
 

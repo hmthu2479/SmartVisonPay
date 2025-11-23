@@ -2,3 +2,14 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
+/* Ẩn mũi tên trên Chrome, Edge, Safari */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Ẩn mũi tên trên Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

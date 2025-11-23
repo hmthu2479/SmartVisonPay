@@ -8,6 +8,7 @@ import {
   Box,
   Snackbar,
   Alert,
+  TextField,
 } from "@mui/material";
 import { useProductStore } from "../../store/useProduct";
 import { useNavigate } from "react-router-dom";
@@ -18,9 +19,8 @@ import { useKioskStore } from "../../store/useKiosk";
 
 const ExtractedBillScreen = () => {
   const { productsInCart, clearProducts, setIsAddProducts } = useProductStore();
-  const { clearCustomer, customerGetByPhone, updateCustomer } =
-    useCustomerStore();
-  const [pointsToUse, setPointsToUse] = useState(0);
+  const { clearCustomer, customerGetByPhone } = useCustomerStore();
+  const [pointsToUse, setPointsToUse] = useState("");
   const { addTransaction } = useTransactionStore();
   const { kioskGetByCode } = useKioskStore();
   const [isPaying, setIsPaying] = useState(false);
@@ -48,7 +48,7 @@ const ExtractedBillScreen = () => {
         quantity: p.quantity ?? 1,
       })),
       paymentMethod: method,
-      discount: pointsToUse,
+      discount: Number(pointsToUse),
       totalAmount: 0,
       dateTime: new Date().toISOString(),
     };
@@ -77,7 +77,7 @@ const ExtractedBillScreen = () => {
   console.log("🚀 ~ ExtractedBillScreen ~ productsInCart:", productsInCart);
   console.log("🚀 ~ ExtractedBillScreen ~ total:", total);
 
-  const finalTotal = Math.max(total - pointsToUse, 0);
+  const finalTotal = Math.max(total - Number(pointsToUse), 0);
   console.log("🚀 ~ ExtractedBillScreen ~ finalTotal:", finalTotal);
 
   return (
@@ -144,22 +144,35 @@ const ExtractedBillScreen = () => {
               </Typography>
 
               {/* Input for using points */}
-              <input
-                type="number"
-                className="border rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Nhập số điểm muốn sử dụng"
+              <TextField
+                margin="dense"
+                label="Điểm thành viên"
+                fullWidth
                 value={pointsToUse}
+                placeholder="Nhập số điểm muốn sử dụng"
+                inputMode="numeric"
                 onChange={(e) => {
-                  const value = Math.max(
-                    0,
-                    Math.min(Number(e.target.value), customerGetByPhone.points)
+                  const raw = e.target.value;
+
+                  // Nếu field bị xoá → để trống
+                  if (raw === "") {
+                    setPointsToUse("");
+                    return;
+                  }
+
+                  // Nếu ký tự không phải số → gán = 0
+                  if (!/^\d+$/.test(raw)) {
+                    setPointsToUse("0");
+                    return;
+                  }
+
+                  // Đảm bảo không vượt quá số điểm hiện có
+                  const number = Math.min(
+                    Number(raw),
+                    customerGetByPhone.points
                   );
-                  setPointsToUse(value);
-                  updateCustomer(
-                    customerGetByPhone._id,
-                    undefined,
-                    value.toString()
-                  );
+
+                  setPointsToUse(number.toString());
                 }}
               />
 
