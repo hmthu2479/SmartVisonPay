@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Load YOLOv8 model
-model = YOLO("yolov8_model/best.pt")  
+model = YOLO("yolov8_model/yolov8s.pt")  
 print("YOLO classes:", model.names)
 
 # Map class names từ YOLO sang tên DB
